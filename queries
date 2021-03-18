@@ -1,0 +1,115 @@
+#Nics
+
+resources
+| where type == "microsoft.network/networkinterfaces"
+| project subscriptionId, ['Name'] = id, ['Resource group'] = strcat('/subscriptions/', subscriptionId, '/resourceGroups/', resourceGroup),
+privateIP = tostring(properties.ipConfigurations[0].properties.privateIPAddress),
+publicIpId = tostring(properties.ipConfigurations[0].properties.publicIPAddress.id),
+ASG = tostring((properties.ipConfigurations[0].properties.applicationSecurityGroups)[0].id),
+['VM'] = strcat('/subscriptions/', subscriptionId, '/resourceGroups/', resourceGroup,'/providers/Microsoft.Compute/virtualMachines/',split(properties.virtualMachine.id,"/")[8])
+	| join kind=leftouter (
+  		Resources
+  		| where type =~ 'microsoft.network/publicipaddresses'
+  		| project publicIpId = id, publicIpAddress = tostring(properties.ipAddress)) on publicIpId
+| project-away publicIpId1
+| project subscriptionId, ['Name'],  ['Resource group'], privateIP, publicIpAddress, publicIpId, ASG, ['VM']
+
+
+#vNets
+resources
+| where type == "microsoft.network/virtualnetworks"
+|  extend SubnetCount = array_length(properties.subnets)
+| project subscriptionId, ['Name'] = id, ['Resource group'] = strcat('/subscriptions/', subscriptionId, '/resourceGroups/', resourceGroup),
+Prefixes = tostring(properties.addressSpace.addressPrefixes), SubnetCount,
+['PeeringsCount'] = array_length(properties.virtualNetworkPeerings)
+
+#Peerings
+resources
+| where type =~ 'Microsoft.network/virtualNetworks'
+| extend peerings=array_length(properties.virtualNetworkPeerings)
+| mv-expand peering=properties.virtualNetworkPeerings
+| where isnotempty(peerings)
+| project subscriptionId, networkId = id, VNetName = name, peeringState=tostring(peering.properties.peeringState), remote_vNet = tostring(peering.properties.remoteVirtualNetwork.id)
+
+#Subnets
+resources
+| where type =~ 'Microsoft.network/virtualNetworks'
+| extend Subnets=array_length(properties.subnets)
+| mv-expand Subnet=properties.subnets
+| where isnotempty(Subnets)
+| extend ['IPs']=iff(array_length(Subnet.properties.ipConfigurations) > 0,toint(array_length(Subnet.properties.ipConfigurations)),0)
+| extend ['delegatedTo']=iff(array_length(Subnet.properties.delegations) > 0,Subnet.properties.delegations[0].properties.serviceName,"")
+| extend totalIPs=toint(exp2((32-(split(Subnet.properties.addressPrefix,"/")[1])))-4)
+| extend ['AppGWIPs']=iff(array_length(Subnet.properties.applicationGatewayIPConfigurations) > 0,toint(array_length(Subnet.properties.applicationGatewayIPConfigurations)),0)
+| extend ['UsedIPs'] = iff(array_length(Subnet.properties.delegations) > 0, totalIPs, IPs + AppGWIPs)
+| project subscriptionId, VNetName = id, Name = tostring(split((Subnet.id),"/")[10]), addressPrefix=tostring(Subnet.properties.addressPrefix), Routetable = tostring(Subnet.properties.routeTable.id),
+UsedIPs,
+FreeIPs = exp2((32-(split(Subnet.properties.addressPrefix,"/")[1])))-4 -UsedIPs,
+totalIPs,
+delegatedTo
+
+
+#Application Gateways
+resources
+| where type == "microsoft.network/applicationgateways"
+| extend FEIP = tostring(properties.frontendIPConfigurations[0].properties.privateIPAddress)
+| extend FEPip = tostring(properties.frontendIPConfigurations[0].properties.publicIPAddress.id)
+| project subscriptionId, ['Name'] = id, location, resourceGroup, ['Pools'] = array_length(properties.backendAddressPools),
+ SKU = tostring(properties.sku.tier),
+ WAF = tostring(properties.webApplicationFirewallConfiguration.enabled),
+ FEIP, FEPip
+ | 
+#IPGroups
+ resources
+| where type == "microsoft.network/ipgroups"
+| project subscriptionId, ['Name']=id, IPAddresses = properties.ipAddresses, IPAddressesCount = array_length(properties.ipAddresses)
+
+
+#Loadbalancers #LBs
+resources
+| where type == "microsoft.network/loadbalancers"
+| project subscriptionId, ['Name']=id,
+BackenPools = array_length(properties.backendAddressPools),
+FEIPs = array_length(properties.frontendIPConfigurations),
+FEIP = tostring(properties.frontendIPConfigurations[0].properties.privateIPAddress),
+subnet = tostring(properties.frontendIPConfigurations[0].properties.subnet.id),
+FEPip  = tostring(properties.frontendIPConfigurations[0].properties.publicIPAddress.id)
+| join kind=leftouter (
+  		Resources
+  		| where type =~ 'microsoft.network/publicipaddresses'
+  		| project FEPip = id, publicIpAddress = tostring(properties.ipAddress)) on FEPip
+| project-away FEPip1
+
+
+#ConnectionMonitors #ConMon
+resources
+| where type == "microsoft.network/networkwatchers/connectionmonitors"
+| project subscriptionId, ['Name']=id,
+Source = tostring(properties.endpoints[0].resourceId),
+Destination =  properties.endpoints[1].address,
+Protocol = properties.testConfigurations[0].protocol,
+Port = properties.testConfigurations[0].tcpConfiguration.port,
+Frequency = properties.testConfigurations[0].testFrequencySec
+
+
+
+#IPAddresses
+resources
+| where type == "microsoft.network/networkinterfaces"  or type == "microsoft.network/applicationgateways" or type == "microsoft.network/loadbalancers" or type == "microsoft.network/azurefirewalls"
+| extend privateIP = tostring(properties.ipConfigurations[0].properties.privateIPAddress)
+| extend publicIpId = tostring(properties.ipConfigurations[0].properties.publicIPAddress.id)
+| extend FEIP = tostring(properties.frontendIPConfigurations[0].properties.privateIPAddress)
+| extend FEPipid = tostring(properties.frontendIPConfigurations[0].properties.publicIPAddress.id)
+	| join kind=leftouter (
+  		Resources
+  		| where type =~ 'microsoft.network/publicipaddresses'
+  		| project publicIpId = id, PIP = tostring(properties.ipAddress)) on publicIpId
+	| join kind=leftouter (
+  		Resources
+  		| where type =~ 'microsoft.network/publicipaddresses'
+  		| project FEPipid = id, FEPip = tostring(properties.ipAddress)) on FEPipid
+| project subscriptionId, ['Name'] = id,
+privIP = iff(privateIP <> "",privateIP,FEIP),
+pubIP = iff(PIP <> "",PIP,FEPip),
+pubIPid = iff(publicIpId <> "",publicIpId,FEPipid)
+
