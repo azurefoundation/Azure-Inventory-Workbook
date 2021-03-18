@@ -2703,7 +2703,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "resources\r\n| where type =~ 'microsoft.containerservice/managedclusters'\r\n\tor type =~ 'microsoft.containerregistry/registries'\r\n\tor type =~ 'microsoft.containerinstance/containergroups'\r\n| extend type = case(\r\n\ttype =~ 'microsoft.containerservice/managedclusters', 'AKS',\r\n\ttype =~ 'microsoft.containerregistry/registries', 'Container Registry',\r\n\ttype =~ 'microsoft.containerinstance/containergroups', 'Container Instnaces',\r\n\tstrcat(\"Not Translated: \", type))\r\n| where type !has \"Not Translated\"\r\n| summarize count() by type\t",
+        "query": "resources\r\n| where type =~ 'microsoft.containerservice/managedclusters'\r\n\tor type =~ 'microsoft.containerregistry/registries'\r\n\tor type =~ 'microsoft.containerinstance/containergroups'\r\n| extend type = case(\r\n\ttype =~ 'microsoft.containerservice/managedclusters', 'AKS',\r\n\ttype =~ 'microsoft.containerregistry/registries', 'Container Registry',\r\n\ttype =~ 'microsoft.containerinstance/containergroups', 'Container Instances',\r\n\tstrcat(\"Not Translated: \", type))\r\n| where type !has \"Not Translated\"\r\n| summarize count() by type\t",
         "size": 1,
         "noDataMessage": "No Container resources found",
         "queryType": 1,
@@ -2801,7 +2801,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "resources\r\n| where type =~ 'microsoft.containerservice/managedclusters'\r\n\tor type =~ 'microsoft.containerregistry/registries'\r\n\tor type =~ 'microsoft.containerinstance/containergroups'\r\n| extend type = case(\r\n\ttype =~ 'microsoft.containerservice/managedclusters', 'AKS',\r\n\ttype =~ 'microsoft.containerregistry/registries', 'Container Registry',\r\n\ttype =~ 'microsoft.containerinstance/containergroups', 'Container Instnaces',\r\n\tstrcat(\"Not Translated: \", type))\r\n| where type !has \"Not Translated\"\r\n| extend Tier = sku.tier\r\n| extend sku = sku.name\r\n| extend State = case(\r\n\ttype =~ 'Container Registry', properties.provisioningState,\r\n\ttype =~ 'Container Instance', properties.instanceView.state,\r\n\tproperties.powerState.code)\r\n| extend Containers = properties.containers\r\n| mvexpand Containers\r\n| extend RestartCount = Containers.properties.instanceView.restartCount\r\n| extend Image = Containers.properties.image\r\n| extend RestartPolicy = properties.restartPolicy\r\n| extend IP = properties.ipAddress.ip\r\n| extend Version = properties.kubernetesVersion\r\n| extend AgentProfiles = properties.agentPoolProfiles\r\n| mvexpand AgentProfiles\r\n| extend NodeCount = AgentProfiles.[\"count\"]\r\n| extend Details = pack_all()\r\n| project id, type, location, resourceGroup, subscriptionId, sku, Tier, State, RestartCount, Version, NodeCount, Details",
+        "query": "resources\r\n| where type =~ 'microsoft.containerservice/managedclusters'\r\n\tor type =~ 'microsoft.containerregistry/registries'\r\n\tor type =~ 'microsoft.containerinstance/containergroups'\r\n| extend type = case(\r\n\ttype =~ 'microsoft.containerservice/managedclusters', 'AKS',\r\n\ttype =~ 'microsoft.containerregistry/registries', 'Container Registry',\r\n\ttype =~ 'microsoft.containerinstance/containergroups', 'Container Instances',\r\n\tstrcat(\"Not Translated: \", type))\r\n| where type !has \"Not Translated\"\r\n| extend Tier = sku.tier\r\n| extend sku = sku.name\r\n| extend State = case(\r\n\ttype =~ 'Container Registry', properties.provisioningState,\r\n\ttype =~ 'Container Instance', properties.instanceView.state,\r\n\tproperties.powerState.code)\r\n| extend Containers = properties.containers\r\n| mvexpand Containers\r\n| extend RestartCount = Containers.properties.instanceView.restartCount\r\n| extend Image = Containers.properties.image\r\n| extend RestartPolicy = properties.restartPolicy\r\n| extend IP = properties.ipAddress.ip\r\n| extend Version = properties.kubernetesVersion\r\n| extend AgentProfiles = properties.agentPoolProfiles\r\n| mvexpand AgentProfiles\r\n| extend NodeCount = AgentProfiles.[\"count\"]\r\n| extend Details = pack_all()\r\n| project id, type, location, resourceGroup, subscriptionId, sku, Tier, State, RestartCount, Version, NodeCount, Details",
         "size": 2,
         "noDataMessage": "No Container resources found",
         "showExportToExcel": true,
@@ -3702,6 +3702,78 @@
             "linkLabel": "NSG Rules",
             "subTarget": "nsgrules",
             "style": "link"
+          },
+          {
+            "id": "3bdf246a-ec97-44d9-b5c7-363578456580",
+            "cellValue": "network",
+            "linkTarget": "parameter",
+            "linkLabel": "NICs",
+            "subTarget": "NICs",
+            "style": "link"
+          },
+          {
+            "id": "2a1951d6-618a-4afc-9fda-0c308fde0d0f",
+            "cellValue": "network",
+            "linkTarget": "parameter",
+            "linkLabel": "vNets",
+            "subTarget": "vNets",
+            "style": "link"
+          },
+          {
+            "id": "732e7bb4-90f4-4079-92cb-7aeac3c4eab2",
+            "cellValue": "network",
+            "linkTarget": "parameter",
+            "linkLabel": "Subnets",
+            "subTarget": "Subnets",
+            "style": "link"
+          },
+          {
+            "id": "ab13797e-774b-49f2-b4d4-80c2caef9ef2",
+            "cellValue": "network",
+            "linkTarget": "parameter",
+            "linkLabel": "Peerings",
+            "subTarget": "Peerings",
+            "style": "link"
+          },
+          {
+            "id": "ada070bd-f0ce-4dde-8ea5-cd308602be32",
+            "cellValue": "network",
+            "linkTarget": "parameter",
+            "linkLabel": "AppGW",
+            "subTarget": "AppGW",
+            "style": "link"
+          },
+          {
+            "id": "3808aab1-bcaa-4bb7-9e17-0e9c6470f8cf",
+            "cellValue": "network",
+            "linkTarget": "parameter",
+            "linkLabel": "IPGroups",
+            "subTarget": "IPGroups",
+            "style": "link"
+          },
+          {
+            "id": "e8e3cf36-0049-451c-a4fb-09cc1d213aad",
+            "cellValue": "network",
+            "linkTarget": "parameter",
+            "linkLabel": "LBs",
+            "subTarget": "LBs",
+            "style": "link"
+          },
+          {
+            "id": "e8fd06d9-8557-4a92-a9f4-ea074c2d3943",
+            "cellValue": "network",
+            "linkTarget": "parameter",
+            "linkLabel": "ConMon",
+            "subTarget": "ConMon",
+            "style": "link"
+          },
+          {
+            "id": "a76bb41f-7d9f-4848-abeb-e3393fc9d325",
+            "cellValue": "network",
+            "linkTarget": "parameter",
+            "linkLabel": "AllIPs",
+            "subTarget": "AllIPs",
+            "style": "link"
           }
         ]
       },
@@ -4113,6 +4185,1356 @@
         }
       ],
       "name": "Network Security Groups"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type == \"microsoft.network/networkinterfaces\"\r\n| project subscriptionId, ['Name'] = id, ['Resource group'] = strcat('/subscriptions/', subscriptionId, '/resourceGroups/', resourceGroup),\r\nprivateIP = tostring(properties.ipConfigurations[0].properties.privateIPAddress),\r\npublicIpId = tostring(properties.ipConfigurations[0].properties.publicIPAddress.id),\r\nASG = tostring((properties.ipConfigurations[0].properties.applicationSecurityGroups)[0].id),\r\n['VM'] = strcat('/subscriptions/', subscriptionId, '/resourceGroups/', resourceGroup,'/providers/Microsoft.Compute/virtualMachines/',split(properties.virtualMachine.id,\"/\")[8])\r\n\t| join kind=leftouter (\r\n  \t\tResources\r\n  \t\t| where type =~ 'microsoft.network/publicipaddresses'\r\n  \t\t| project publicIpId = id, publicIpAddress = tostring(properties.ipAddress)) on publicIpId\r\n| project-away publicIpId1\r\n| project subscriptionId, ['Name'],  ['Resource group'], privateIP, publicIpAddress, publicIpId, ASG, ['VM']\r\n",
+        "size": 2,
+        "title": "NetworkInterfaces",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "$gen_group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "subscriptionId",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Resource group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Network Security Group",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "Flow Logs",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Traffic Analytics",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "unknown"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Subscription",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Flow logs",
+              "formatter": 11,
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false
+                }
+              }
+            },
+            {
+              "columnMatch": "Resource",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            }
+          ],
+          "rowLimit": 1000,
+          "filter": true,
+          "hierarchySettings": {
+            "treeType": 1,
+            "groupBy": [
+              "subscriptionId"
+            ],
+            "expandTopLevel": true,
+            "finalBy": "Network Security Group"
+          }
+        },
+        "sortBy": []
+      },
+      "conditionalVisibilities": [
+        {
+          "parameterName": "selectedTab",
+          "comparison": "isEqualTo",
+          "value": "network"
+        },
+        {
+          "parameterName": "network",
+          "comparison": "isEqualTo",
+          "value": "NICs"
+        }
+      ],
+      "name": "NICs"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type == \"microsoft.network/virtualnetworks\"\r\n|  extend SubnetCount = array_length(properties.subnets)\r\n| project subscriptionId, ['Name'] = id, ['Resource group'] = strcat('/subscriptions/', subscriptionId, '/resourceGroups/', resourceGroup),\r\nPrefixes = tostring(properties.addressSpace.addressPrefixes), SubnetCount,\r\n['PeeringsCount'] = array_length(properties.virtualNetworkPeerings)",
+        "size": 2,
+        "title": "virtual Networks",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "$gen_group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "subscriptionId",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Resource group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Network Security Group",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "Flow Logs",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Traffic Analytics",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "unknown"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Subscription",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Flow logs",
+              "formatter": 11,
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false
+                }
+              }
+            },
+            {
+              "columnMatch": "Resource",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            }
+          ],
+          "rowLimit": 1000,
+          "filter": true,
+          "hierarchySettings": {
+            "treeType": 1,
+            "groupBy": [
+              "subscriptionId"
+            ],
+            "expandTopLevel": true,
+            "finalBy": "Network Security Group"
+          }
+        },
+        "sortBy": []
+      },
+      "conditionalVisibilities": [
+        {
+          "parameterName": "selectedTab",
+          "comparison": "isEqualTo",
+          "value": "network"
+        },
+        {
+          "parameterName": "network",
+          "comparison": "isEqualTo",
+          "value": "vNets"
+        }
+      ],
+      "name": "vNets"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type =~ 'Microsoft.network/virtualNetworks'\r\n| extend Subnets=array_length(properties.subnets)\r\n| mv-expand Subnet=properties.subnets\r\n| where isnotempty(Subnets)\r\n| extend ['IPs']=iff(array_length(Subnet.properties.ipConfigurations) > 0,toint(array_length(Subnet.properties.ipConfigurations)),0)\r\n| extend ['delegatedTo']=iff(array_length(Subnet.properties.delegations) > 0,Subnet.properties.delegations[0].properties.serviceName,\"\")\r\n| extend totalIPs=toint(exp2((32-(split(Subnet.properties.addressPrefix,\"/\")[1])))-4)\r\n| extend ['AppGWIPs']=iff(array_length(Subnet.properties.applicationGatewayIPConfigurations) > 0,toint(array_length(Subnet.properties.applicationGatewayIPConfigurations)),0)\r\n| extend ['UsedIPs'] = iff(array_length(Subnet.properties.delegations) > 0, totalIPs, IPs + AppGWIPs)\r\n| project subscriptionId, VNetName = id, Name = tostring(split((Subnet.id),\"/\")[10]), addressPrefix=tostring(Subnet.properties.addressPrefix), Routetable = tostring(Subnet.properties.routeTable.id),\r\nUsedIPs,\r\nFreeIPs = exp2((32-(split(Subnet.properties.addressPrefix,\"/\")[1])))-4 -UsedIPs,\r\ntotalIPs,\r\ndelegatedTo",
+        "size": 2,
+        "title": "Subnets",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "$gen_group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "subscriptionId",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Resource group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Network Security Group",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "Flow Logs",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Traffic Analytics",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "unknown"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Subscription",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Flow logs",
+              "formatter": 11,
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false
+                }
+              }
+            },
+            {
+              "columnMatch": "Resource",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            }
+          ],
+          "rowLimit": 1000,
+          "filter": true,
+          "hierarchySettings": {
+            "treeType": 1,
+            "groupBy": [
+              "subscriptionId"
+            ],
+            "expandTopLevel": true,
+            "finalBy": "Network Security Group"
+          }
+        },
+        "sortBy": []
+      },
+      "conditionalVisibilities": [
+        {
+          "parameterName": "selectedTab",
+          "comparison": "isEqualTo",
+          "value": "network"
+        },
+        {
+          "parameterName": "network",
+          "comparison": "isEqualTo",
+          "value": "Subnets"
+        }
+      ],
+      "name": "Subnets"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type =~ 'Microsoft.network/virtualNetworks'\r\n| extend peerings=array_length(properties.virtualNetworkPeerings)\r\n| mv-expand peering=properties.virtualNetworkPeerings\r\n| where isnotempty(peerings)\r\n| project subscriptionId, networkId = id, VNetName = name, peeringState=tostring(peering.properties.peeringState), remote_vNet = tostring(peering.properties.remoteVirtualNetwork.id)",
+        "size": 2,
+        "title": "Peerings",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "$gen_group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "subscriptionId",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Resource group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Network Security Group",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "Flow Logs",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Traffic Analytics",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "unknown"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Subscription",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Flow logs",
+              "formatter": 11,
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false
+                }
+              }
+            },
+            {
+              "columnMatch": "Resource",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            }
+          ],
+          "rowLimit": 1000,
+          "filter": true,
+          "hierarchySettings": {
+            "treeType": 1,
+            "groupBy": [
+              "subscriptionId"
+            ],
+            "expandTopLevel": true,
+            "finalBy": "Network Security Group"
+          }
+        },
+        "sortBy": []
+      },
+      "conditionalVisibilities": [
+        {
+          "parameterName": "selectedTab",
+          "comparison": "isEqualTo",
+          "value": "network"
+        },
+        {
+          "parameterName": "network",
+          "comparison": "isEqualTo",
+          "value": "Peerings"
+        }
+      ],
+      "name": "Perrings"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type == \"microsoft.network/applicationgateways\"\r\n| extend FEIP = tostring(properties.frontendIPConfigurations[0].properties.privateIPAddress)\r\n| extend FEPip = tostring(properties.frontendIPConfigurations[0].properties.publicIPAddress.id)\r\n| project subscriptionId, ['Name'] = id, location, resourceGroup, ['Pools'] = array_length(properties.backendAddressPools),\r\n SKU = tostring(properties.sku.tier),\r\n WAF = tostring(properties.webApplicationFirewallConfiguration.enabled),\r\n FEIP, FEPip",
+        "size": 2,
+        "title": "Application Gateway",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "value::all"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "$gen_group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "subscriptionId",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Resource group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Network Security Group",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "Flow Logs",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Traffic Analytics",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "unknown"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Subscription",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Flow logs",
+              "formatter": 11,
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false
+                }
+              }
+            },
+            {
+              "columnMatch": "Resource",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            }
+          ],
+          "rowLimit": 1000,
+          "filter": true,
+          "hierarchySettings": {
+            "treeType": 1,
+            "groupBy": [
+              "subscriptionId"
+            ],
+            "expandTopLevel": true,
+            "finalBy": "Network Security Group"
+          }
+        },
+        "sortBy": []
+      },
+      "conditionalVisibilities": [
+        {
+          "parameterName": "selectedTab",
+          "comparison": "isEqualTo",
+          "value": "network"
+        },
+        {
+          "parameterName": "network",
+          "comparison": "isEqualTo",
+          "value": "AppGW"
+        }
+      ],
+      "name": "AppGW"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": " resources\r\n| where type == \"microsoft.network/ipgroups\"\r\n| project subscriptionId, ['Name']=id, IPAddresses = properties.ipAddresses, IPAddressesCount = array_length(properties.ipAddresses)",
+        "size": 2,
+        "title": "IPGroups",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "$gen_group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "subscriptionId",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Resource group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Network Security Group",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "Flow Logs",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Traffic Analytics",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "unknown"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Subscription",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Flow logs",
+              "formatter": 11,
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false
+                }
+              }
+            },
+            {
+              "columnMatch": "Resource",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            }
+          ],
+          "rowLimit": 1000,
+          "filter": true,
+          "hierarchySettings": {
+            "treeType": 1,
+            "groupBy": [
+              "subscriptionId"
+            ],
+            "expandTopLevel": true,
+            "finalBy": "Network Security Group"
+          }
+        },
+        "sortBy": []
+      },
+      "conditionalVisibilities": [
+        {
+          "parameterName": "selectedTab",
+          "comparison": "isEqualTo",
+          "value": "network"
+        },
+        {
+          "parameterName": "network",
+          "comparison": "isEqualTo",
+          "value": "IPGroups"
+        }
+      ],
+      "name": "IPGroups"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type == \"microsoft.network/loadbalancers\"\r\n| project subscriptionId, ['Name']=id,\r\nBackenPools = array_length(properties.backendAddressPools),\r\nFEIPs = array_length(properties.frontendIPConfigurations),\r\nFEIP = tostring(properties.frontendIPConfigurations[0].properties.privateIPAddress),\r\nsubnet = tostring(properties.frontendIPConfigurations[0].properties.subnet.id),\r\nFEPip  = tostring(properties.frontendIPConfigurations[0].properties.publicIPAddress.id)\r\n| join kind=leftouter (\r\n  \t\tResources\r\n  \t\t| where type =~ 'microsoft.network/publicipaddresses'\r\n  \t\t| project FEPip = id, publicIpAddress = tostring(properties.ipAddress)) on FEPip\r\n| project-away FEPip1",
+        "size": 2,
+        "title": "Loadbalancers",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "$gen_group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "subscriptionId",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Resource group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Network Security Group",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "Flow Logs",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Traffic Analytics",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "unknown"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Subscription",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Flow logs",
+              "formatter": 11,
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false
+                }
+              }
+            },
+            {
+              "columnMatch": "Resource",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            }
+          ],
+          "rowLimit": 1000,
+          "filter": true,
+          "hierarchySettings": {
+            "treeType": 1,
+            "groupBy": [
+              "subscriptionId"
+            ],
+            "expandTopLevel": true,
+            "finalBy": "Network Security Group"
+          }
+        },
+        "sortBy": []
+      },
+      "conditionalVisibilities": [
+        {
+          "parameterName": "selectedTab",
+          "comparison": "isEqualTo",
+          "value": "network"
+        },
+        {
+          "parameterName": "network",
+          "comparison": "isEqualTo",
+          "value": "LBs"
+        }
+      ],
+      "name": "Loadbalancers"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type == \"microsoft.network/networkwatchers/connectionmonitors\"\r\n| project subscriptionId, ['Name']=id,\r\nSource = tostring(properties.endpoints[0].resourceId),\r\nDestination =  properties.endpoints[1].address,\r\nProtocol = properties.testConfigurations[0].protocol,\r\nPort = properties.testConfigurations[0].tcpConfiguration.port,\r\nFrequency = properties.testConfigurations[0].testFrequencySec",
+        "size": 2,
+        "title": "ConnectionMonitors",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "$gen_group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "subscriptionId",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Resource group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Network Security Group",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "Flow Logs",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Traffic Analytics",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "unknown"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Subscription",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Flow logs",
+              "formatter": 11,
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false
+                }
+              }
+            },
+            {
+              "columnMatch": "Resource",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            }
+          ],
+          "rowLimit": 1000,
+          "filter": true,
+          "hierarchySettings": {
+            "treeType": 1,
+            "groupBy": [
+              "subscriptionId"
+            ],
+            "expandTopLevel": true,
+            "finalBy": "Network Security Group"
+          }
+        },
+        "sortBy": []
+      },
+      "conditionalVisibilities": [
+        {
+          "parameterName": "selectedTab",
+          "comparison": "isEqualTo",
+          "value": "network"
+        },
+        {
+          "parameterName": "network",
+          "comparison": "isEqualTo",
+          "value": "ConMon"
+        }
+      ],
+      "name": "ConnectionMonitors"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type == \"microsoft.network/networkinterfaces\"  or type == \"microsoft.network/applicationgateways\" or type == \"microsoft.network/loadbalancers\" or type == \"microsoft.network/azurefirewalls\"\r\n| extend privateIP = tostring(properties.ipConfigurations[0].properties.privateIPAddress)\r\n| extend publicIpId = tostring(properties.ipConfigurations[0].properties.publicIPAddress.id)\r\n| extend FEIP = tostring(properties.frontendIPConfigurations[0].properties.privateIPAddress)\r\n| extend FEPipid = tostring(properties.frontendIPConfigurations[0].properties.publicIPAddress.id)\r\n\t| join kind=leftouter (\r\n  \t\tResources\r\n  \t\t| where type =~ 'microsoft.network/publicipaddresses'\r\n  \t\t| project publicIpId = id, PIP = tostring(properties.ipAddress)) on publicIpId\r\n\t| join kind=leftouter (\r\n  \t\tResources\r\n  \t\t| where type =~ 'microsoft.network/publicipaddresses'\r\n  \t\t| project FEPipid = id, FEPip = tostring(properties.ipAddress)) on FEPipid\r\n| project subscriptionId, ['Name'] = id,\r\nprivIP = iff(privateIP <> \"\",privateIP,FEIP),\r\npubIP = iff(PIP <> \"\",PIP,FEPip),\r\npubIPid = iff(publicIpId <> \"\",publicIpId,FEPipid)",
+        "size": 2,
+        "title": "All IP Addresses",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "$gen_group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "subscriptionId",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Resource group",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "Network Security Group",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "Flow Logs",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Traffic Analytics",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "1",
+                    "representation": "success",
+                    "text": "Enabled"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "0",
+                    "representation": "disabled",
+                    "text": "Disabled"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "unknown"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Subscription",
+              "formatter": 5,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Flow logs",
+              "formatter": 11,
+              "numberFormat": {
+                "unit": 0,
+                "options": {
+                  "style": "decimal",
+                  "useGrouping": false
+                }
+              }
+            },
+            {
+              "columnMatch": "Resource",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource",
+                "showIcon": true
+              }
+            }
+          ],
+          "rowLimit": 1000,
+          "filter": true,
+          "hierarchySettings": {
+            "treeType": 1,
+            "groupBy": [
+              "subscriptionId"
+            ],
+            "expandTopLevel": true,
+            "finalBy": "Network Security Group"
+          }
+        },
+        "sortBy": []
+      },
+      "conditionalVisibilities": [
+        {
+          "parameterName": "selectedTab",
+          "comparison": "isEqualTo",
+          "value": "network"
+        },
+        {
+          "parameterName": "network",
+          "comparison": "isEqualTo",
+          "value": "AllIPs"
+        }
+      ],
+      "name": "AppIPs"
     },
     {
       "type": 1,
@@ -5970,46 +7392,20 @@
         ],
         "parameters": [
           {
-            "id": "f89867f4-907a-49cd-add8-bded49c43bed",
+            "id": "9bbf2fdf-2afe-4df0-a469-d66a625baf9b",
             "version": "KqlParameterItem/1.0",
-            "name": "Environment",
+            "name": "CostCenter",
             "type": 5,
             "isRequired": true,
             "multiSelect": true,
             "quote": "'",
             "delimiter": ",",
-            "query": "resources   \r\n| where tags.Environment != ''   \r\n| distinct tostring(tags.Environment)",
+            "query": "resources   \r\n| where tags.CostCenter != ''   \r\n| distinct tostring(tags.CostCenter)",
             "crossComponentResources": [
               "{Subscriptions}"
             ],
             "value": [
-              "value::all"
-            ],
-            "typeSettings": {
-              "additionalResourceOptions": [
-                "value::1",
-                "value::all"
-              ],
-              "showDefault": false
-            },
-            "timeContext": {
-              "durationMs": 86400000
-            },
-            "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"
-          },
-          {
-            "id": "ef32b148-7ea7-4af4-aaf7-b6a87f2d00d7",
-            "version": "KqlParameterItem/1.0",
-            "name": "Application",
-            "type": 5,
-            "isRequired": true,
-            "multiSelect": true,
-            "quote": "'",
-            "delimiter": ",",
-            "query": "resources \r\n| where tags.Environment in~ ({Environment}) or '*' in~ ({Environment})\r\n| where tags.Application != ''   \r\n| distinct tostring(tags.Application)  ",
-            "crossComponentResources": [
-              "{Subscriptions}"
+              "DE01"
             ],
             "typeSettings": {
               "additionalResourceOptions": [
@@ -6034,66 +7430,25 @@
         "comparison": "isEqualTo",
         "value": "tags"
       },
-      "name": "parameters - Tagged Resources"
+      "name": "parameters - Tagged Resources - Copy"
     },
     {
       "type": 1,
       "content": {
-        "json": "## Showing Resources for {Environment} and Application(s) {Application}"
+        "json": "## Showing Resources for CostCenter: {CostCenter}"
       },
       "conditionalVisibility": {
         "parameterName": "selectedTab",
         "comparison": "isEqualTo",
         "value": "tags"
       },
-      "name": "text - Show Text for Tagged Selections"
+      "name": "Show Text for Tagged Selections "
     },
     {
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "resources\r\n| where type != 'microsoft.network/networkinterfaces'\r\n| where type != 'microsoft.compute/disks'\r\n| where tags.Environment in~ ({Environment}) or '*' in~ ({Environment})\r\n| where tags.Application in~ ({Application}) or '*' in~ ({Application})\r\n| extend type = case(\r\ntype =~ 'microsoft.network/networksecuritygroups', \"NSGs\", \r\ntype =~ \"microsoft.network/publicipaddresses\", \"Public IPs\", \r\ntype =~ 'microsoft.network/virtualnetworks', \"vNets\",\r\ntype =~ 'microsoft.network/networkwatchers/connectionmonitors', \"Connection Monitors\",\r\ntype =~ 'microsoft.network/privatednszones', \"Private DNS\",\r\ntype =~ 'microsoft.network/virtualnetworkgateways', \"vNet Gateways\",\r\ntype =~ 'microsoft.network/connections', \"Connections\",\r\ntype =~ 'microsoft.network/networkwatchers', \"Network Watchers\",\r\ntype =~ 'microsoft.network/privateendpoints', \"Private Endpoints\",\r\ntype =~ 'microsoft.network/localnetworkgateways', \"Local Network Gateways\",\r\ntype =~ 'microsoft.network/privatednszones/virtualnetworklinks', \"vNet Links\",\r\ntype =~ 'microsoft.web/serverfarms', \"App Service Plans\",\r\nkind == 'functionapp', \"Azure Functions\", \r\nkind == \"api\", \"API Apps\", \r\ntype =~ 'microsoft.web/sites', \"App Services\",\r\ntype =~ \"microsoft.compute/virtualmachines\", \"Azure Compute\",\r\ntype =~ \"microsoft.logic/workflows\", \"LogicApps\",\r\ntype =~ 'microsoft.keyvault/vaults', \"Key Vaults\",\r\ntype =~ 'microsoft.keyvault/vaults', \"Hybrid Compute\",\r\ntype =~ 'microsoft.storage/storageaccounts', \"Storage Accounts\",\r\ntype =~ 'microsoft.compute/availabilitysets', 'Availability Sets',\r\ntype =~ 'microsoft.insights/components','Application Insights',\r\ntype =~ 'microsoft.desktopvirtualization/applicationgroups', 'WVD Application Groups',\r\ntype =~ 'microsoft.desktopvirtualization/workspaces', 'WVD Workspaces',\r\ntype =~ 'microsoft.desktopvirtualization/hostpools', 'WVD Hostpools',\r\nstrcat(\"Not Translated: \", type))\r\n| summarize count() by type\r\n\r\n\r\n",
-        "size": 0,
-        "queryType": 1,
-        "resourceType": "microsoft.resourcegraph/resources",
-        "crossComponentResources": [
-          "{Subscriptions}"
-        ],
-        "visualization": "tiles",
-        "tileSettings": {
-          "titleContent": {
-            "columnMatch": "type",
-            "formatter": 1
-          },
-          "leftContent": {
-            "columnMatch": "count_",
-            "formatter": 12,
-            "formatOptions": {
-              "palette": "auto"
-            },
-            "numberFormat": {
-              "unit": 17,
-              "options": {
-                "maximumSignificantDigits": 3,
-                "maximumFractionDigits": 2
-              }
-            }
-          },
-          "showBorder": true
-        }
-      },
-      "conditionalVisibility": {
-        "parameterName": "selectedTab",
-        "comparison": "isEqualTo",
-        "value": "tags"
-      },
-      "name": "query - Tagged Resources"
-    },
-    {
-      "type": 3,
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "resources\r\n| where type != 'microsoft.network/networkinterfaces'\r\n| where type != 'microsoft.compute/disks'\r\n| where tags.Environment in~ ({Environment}) or '*' in~ ({Environment})\r\n| where tags.Application in~ ({Application}) or '*' in~ ({Application})\r\n| extend type = case(\r\ntype =~ 'microsoft.network/networksecuritygroups', \"NSGs\", \r\ntype =~ \"microsoft.network/publicipaddresses\", \"Public IPs\", \r\ntype =~ 'microsoft.network/virtualnetworks', \"vNets\",\r\ntype =~ 'microsoft.network/networkwatchers/connectionmonitors', \"Connection Monitors\",\r\ntype =~ 'microsoft.network/privatednszones', \"Private DNS\",\r\ntype =~ 'microsoft.network/virtualnetworkgateways', \"vNet Gateways\",\r\ntype =~ 'microsoft.network/connections', \"Connections\",\r\ntype =~ 'microsoft.network/networkwatchers', \"Network Watchers\",\r\ntype =~ 'microsoft.network/privateendpoints', \"Private Endpoints\",\r\ntype =~ 'microsoft.network/localnetworkgateways', \"Local Network Gateways\",\r\ntype =~ 'microsoft.network/privatednszones/virtualnetworklinks', \"vNet Links\",\r\ntype =~ 'microsoft.web/serverfarms', \"App Service Plans\",\r\nkind == 'functionapp', \"Azure Functions\", \r\nkind == \"api\", \"API Apps\", \r\ntype =~ 'microsoft.web/sites', \"App Services\",\r\ntype =~ \"microsoft.compute/virtualmachines\", \"Azure Compute\",\r\ntype =~ \"microsoft.logic/workflows\", \"LogicApps\",\r\ntype =~ 'microsoft.keyvault/vaults', \"Key Vaults\",\r\ntype =~ 'microsoft.keyvault/vaults', \"Hybrid Compute\",\r\ntype =~ 'microsoft.storage/storageaccounts', \"Storage Accounts\",\r\ntype =~ 'microsoft.compute/availabilitysets', 'Availability Sets',\r\ntype =~ 'microsoft.insights/components','Application Insights',\r\ntype =~ 'microsoft.desktopvirtualization/applicationgroups', 'WVD Application Groups',\r\ntype =~ 'microsoft.desktopvirtualization/workspaces', 'WVD Workspaces',\r\ntype =~ 'microsoft.desktopvirtualization/hostpools', 'WVD Hostpools',\r\nstrcat(\"Not Translated: \", type))\r\n| extend Details = pack_all()\r\n| project id, subscriptionId, type, location, resourceGroup, Details\r\n\r\n\r\n",
+        "query": "resources\r\n| where type != 'microsoft.network/networkinterfaces'\r\n| where type != 'microsoft.compute/disks'\r\n| where tags.CostCenter in~ ({CostCenter}) or '*' in~ ({CostCenter})\r\n| extend type = case(\r\ntype =~ 'microsoft.network/networksecuritygroups', \"NSGs\", \r\ntype =~ \"microsoft.network/publicipaddresses\", \"Public IPs\", \r\ntype =~ 'microsoft.network/virtualnetworks', \"vNets\",\r\ntype =~ 'microsoft.network/networkwatchers/connectionmonitors', \"Connection Monitors\",\r\ntype =~ 'microsoft.network/privatednszones', \"Private DNS\",\r\ntype =~ 'microsoft.network/virtualnetworkgateways', \"vNet Gateways\",\r\ntype =~ 'microsoft.network/connections', \"Connections\",\r\ntype =~ 'microsoft.network/networkwatchers', \"Network Watchers\",\r\ntype =~ 'microsoft.network/privateendpoints', \"Private Endpoints\",\r\ntype =~ 'microsoft.network/localnetworkgateways', \"Local Network Gateways\",\r\ntype =~ 'microsoft.network/privatednszones/virtualnetworklinks', \"vNet Links\",\r\ntype =~ 'microsoft.web/serverfarms', \"App Service Plans\",\r\nkind == 'functionapp', \"Azure Functions\", \r\nkind == \"api\", \"API Apps\", \r\ntype =~ 'microsoft.web/sites', \"App Services\",\r\ntype =~ \"microsoft.compute/virtualmachines\", \"Azure Compute\",\r\ntype =~ \"microsoft.logic/workflows\", \"LogicApps\",\r\ntype =~ 'microsoft.keyvault/vaults', \"Key Vaults\",\r\ntype =~ 'microsoft.keyvault/vaults', \"Hybrid Compute\",\r\ntype =~ 'microsoft.storage/storageaccounts', \"Storage Accounts\",\r\ntype =~ 'microsoft.compute/availabilitysets', 'Availability Sets',\r\ntype =~ 'microsoft.insights/components','Application Insights',\r\ntype =~ 'microsoft.desktopvirtualization/applicationgroups', 'WVD Application Groups',\r\ntype =~ 'microsoft.desktopvirtualization/workspaces', 'WVD Workspaces',\r\ntype =~ 'microsoft.desktopvirtualization/hostpools', 'WVD Hostpools',\r\nstrcat(\"Not Translated: \", type))\r\n| extend Details = pack_all()\r\n| project id, subscriptionId, type, location, resourceGroup, Details\r\n\r\n\r\n",
         "size": 0,
         "queryType": 1,
         "resourceType": "microsoft.resourcegraph/resources",
@@ -6173,6 +7528,135 @@
       "name": "query - Tagged Resources - Copy"
     },
     {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "parameters": [
+          {
+            "id": "f89867f4-907a-49cd-add8-bded49c43bed",
+            "version": "KqlParameterItem/1.0",
+            "name": "Environment",
+            "type": 5,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "resources   \r\n| where tags.Environment != ''   \r\n| distinct tostring(tags.Environment)",
+            "crossComponentResources": [
+              "{Subscriptions}"
+            ],
+            "value": [
+              "value::all"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::1",
+                "value::all"
+              ],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources"
+          },
+          {
+            "id": "ef32b148-7ea7-4af4-aaf7-b6a87f2d00d7",
+            "version": "KqlParameterItem/1.0",
+            "name": "Application",
+            "type": 5,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "resources \r\n| where tags.Environment in~ ({Environment}) or '*' in~ ({Environment})\r\n| where tags.Application != ''   \r\n| distinct tostring(tags.Application)  ",
+            "crossComponentResources": [
+              "{Subscriptions}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::1",
+                "value::all"
+              ],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": null
+          }
+        ],
+        "style": "pills",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources"
+      },
+      "conditionalVisibility": {
+        "parameterName": "selectedTab",
+        "comparison": "isEqualTo",
+        "value": "tags"
+      },
+      "name": "parameters - Tagged Resources"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Showing Resources for {Environment} and Application(s) {Application}"
+      },
+      "conditionalVisibility": {
+        "parameterName": "selectedTab",
+        "comparison": "isEqualTo",
+        "value": "tags"
+      },
+      "name": "text - Show Text for Tagged Selections"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type != 'microsoft.network/networkinterfaces'\r\n| where type != 'microsoft.compute/disks'\r\n| where tags.Environment in~ ({Environment}) or '*' in~ ({Environment})\r\n| where tags.Application in~ ({Application}) or '*' in~ ({Application})\r\n| extend type = case(\r\ntype =~ 'microsoft.network/networksecuritygroups', \"NSGs\", \r\ntype =~ \"microsoft.network/publicipaddresses\", \"Public IPs\", \r\ntype =~ 'microsoft.network/virtualnetworks', \"vNets\",\r\ntype =~ 'microsoft.network/networkwatchers/connectionmonitors', \"Connection Monitors\",\r\ntype =~ 'microsoft.network/privatednszones', \"Private DNS\",\r\ntype =~ 'microsoft.network/virtualnetworkgateways', \"vNet Gateways\",\r\ntype =~ 'microsoft.network/connections', \"Connections\",\r\ntype =~ 'microsoft.network/networkwatchers', \"Network Watchers\",\r\ntype =~ 'microsoft.network/privateendpoints', \"Private Endpoints\",\r\ntype =~ 'microsoft.network/localnetworkgateways', \"Local Network Gateways\",\r\ntype =~ 'microsoft.network/privatednszones/virtualnetworklinks', \"vNet Links\",\r\ntype =~ 'microsoft.web/serverfarms', \"App Service Plans\",\r\nkind == 'functionapp', \"Azure Functions\", \r\nkind == \"api\", \"API Apps\", \r\ntype =~ 'microsoft.web/sites', \"App Services\",\r\ntype =~ \"microsoft.compute/virtualmachines\", \"Azure Compute\",\r\ntype =~ \"microsoft.logic/workflows\", \"LogicApps\",\r\ntype =~ 'microsoft.keyvault/vaults', \"Key Vaults\",\r\ntype =~ 'microsoft.keyvault/vaults', \"Hybrid Compute\",\r\ntype =~ 'microsoft.storage/storageaccounts', \"Storage Accounts\",\r\ntype =~ 'microsoft.compute/availabilitysets', 'Availability Sets',\r\ntype =~ 'microsoft.insights/components','Application Insights',\r\ntype =~ 'microsoft.desktopvirtualization/applicationgroups', 'WVD Application Groups',\r\ntype =~ 'microsoft.desktopvirtualization/workspaces', 'WVD Workspaces',\r\ntype =~ 'microsoft.desktopvirtualization/hostpools', 'WVD Hostpools',\r\nstrcat(\"Not Translated: \", type))\r\n| summarize count() by type\r\n\r\n\r\n",
+        "size": 0,
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "tiles",
+        "tileSettings": {
+          "titleContent": {
+            "columnMatch": "type",
+            "formatter": 1
+          },
+          "leftContent": {
+            "columnMatch": "count_",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto"
+            },
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          },
+          "showBorder": true
+        }
+      },
+      "conditionalVisibility": {
+        "parameterName": "selectedTab",
+        "comparison": "isEqualTo",
+        "value": "tags"
+      },
+      "name": "query - Tagged Resources"
+    },
+    {
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
@@ -6223,9 +7707,6 @@
             "query": "resources | where tags == ''\r\n| distinct type",
             "crossComponentResources": [
               "{Subscriptions}"
-            ],
-            "value": [
-              "value::all"
             ],
             "typeSettings": {
               "additionalResourceOptions": [
